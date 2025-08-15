@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609807890265",
+    "project_id": "minitaskmanager-1a96a",
+    "storage_bucket": "minitaskmanager-1a96a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609807890265:android:15679015e6aaea984f7e48",
+        "android_client_info": {
+          "package_name": "com.app.mini_task_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdRgCzJsYaJqYFrDJKp8JuMgtKBvz8gBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
