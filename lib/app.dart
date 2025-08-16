@@ -14,7 +14,8 @@ class App extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: false,
       child: BlocProvider(
-        create: (context) => AuthBloc(getIt<AuthRepositoryImpl>())..checkState(),
+        create: (context) => AuthBloc(getIt<AuthRepositoryImpl>())
+          ..checkState(),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           onGenerateRoute: AppRoutes.onGenerateRoutes,

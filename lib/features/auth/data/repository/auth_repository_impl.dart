@@ -15,7 +15,8 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (FirebaseAuth.instance.currentUser != null) {
-        return AppResultState.success("Login Successful");
+        final user = FirebaseAuth.instance.currentUser;
+        return AppResultState.success(user);
       }
       else {
         return AppResultState.error("Login Failed");
@@ -37,7 +38,8 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       if (FirebaseAuth.instance.currentUser != null) {
-        return AppResultState.success("Register Successful");
+        final user = FirebaseAuth.instance.currentUser;
+        return AppResultState.success(user);
       }
       else {
         return AppResultState.error("Register Failed");
@@ -50,12 +52,24 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<AppResultState> checkState() async {
     try {
-      if (FirebaseAuth.instance.currentUser != null) {
-        return AppResultState.success("already login");
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        return AppResultState.success(user);
       }
       else {
         return AppResultState.error("signed out");
       }
+    } catch (e) {
+      return AppResultState.error(e.toString());
+    }
+  }
+
+  @override
+  Future<AppResultState> logout() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      return AppResultState.success("signed out");
+
     } catch (e) {
       return AppResultState.error(e.toString());
     }

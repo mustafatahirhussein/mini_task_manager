@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mini_task_manager/features/auth/presentation/bloc/auth_bloc.dart';
@@ -15,13 +18,16 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  StreamController<bool> password$ = StreamController<bool>.broadcast();
+
   void _login(BuildContext context) {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       final formData = _formKey.currentState!.value;
-      print("Email: ${formData['email']}");
-      print("Password: ${formData['password']}");
 
-      context.read<AuthBloc>().register(email: formData['email'], password: formData['password']);
+      context.read<AuthBloc>().login(
+        email: formData['email'],
+        password: formData['password'],
+      );
     }
   }
 
@@ -29,7 +35,16 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Login")),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            AppConstants.userId = state.user.uid;
+            Navigator.pushNamedAndRemoveUntil(context, AppRoutes.dashboard, (_) => false);
+          }
+          if(state is AuthError) {
+            AppSnackBar.showErrorMessage(context, message: state.message);
+          }
+        },
         builder: (context, state) {
           return Padding(
             padding: const EdgeInsets.all(16),
@@ -49,37 +64,67 @@ class _LoginViewState extends State<LoginView> {
                     ]),
                   ),
                   const SizedBox(height: 16),
-                  FormBuilderTextField(
-                    name: 'password',
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
-                    ),
-                    obscureText: true,
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.minLength(6),
-                    ]),
+
+                  StreamBuilder<bool>(
+                    stream: password$.stream,
+                    initialData: true,
+                    builder: (context, snapshot) {
+                      return FormBuilderTextField(
+                        name: 'password',
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          prefixIcon: Icon(Icons.lock),
+                          suffixIcon: GestureDetector(
+                            onTap: () => password$.sink.add(!snapshot.data!),
+                            child: Icon(
+                              snapshot.data ?? true
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
+                        obscureText: snapshot.data ?? true,
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.minLength(6),
+                        ]),
+                      );
+                    },
                   ),
+
                   const SizedBox(height: 24),
-                  state is AuthLoading ? const CircularProgressIndicator() : AppButton.primary(
+                  state is AuthLoading
+                      ? const CircularProgressIndicator()
+                      : AppButton.primary(
                     onTap: () => _login(context),
                     label: "Login",
                   ),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (_) => const RegisterPage()),
-                  //     );
-                  //   },
-                  //   child: const Text("Don't have an account? Register"),
-                  // )
+
+                  const SizedBox(height: 24),
+
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Don't have an account? ",
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: "Sign up",
+                          style: TextStyle(color: AppColors.primary),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () =>
+                                Navigator.pushNamed(context, AppRoutes.signup),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

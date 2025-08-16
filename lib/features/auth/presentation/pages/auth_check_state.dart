@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mini_task_manager/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:mini_task_manager/features/auth/presentation/bloc/auth_state.dart';
@@ -12,8 +11,10 @@ class AuthCheckView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) async {
-        await Future.delayed(const Duration(seconds: 3));
-        if (FirebaseAuth.instance.currentUser != null) {
+        await Future.delayed(const Duration(seconds: 1));
+        if (state is AuthSuccess) {
+          AppConstants.userId = state.user.uid;
+
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppRoutes.dashboard,

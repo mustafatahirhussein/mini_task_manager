@@ -15,7 +15,7 @@ class AuthBloc extends Cubit<AuthState> {
       emit(AuthError(res.error ?? ""));
     }
     else {
-      emit(AuthSuccess(res.data ?? ""));
+      emit(AuthSuccess(res.data));
     }
   }
 
@@ -27,7 +27,7 @@ class AuthBloc extends Cubit<AuthState> {
       emit(AuthError(res.error ?? ""));
     }
     else {
-      emit(AuthSuccess(res.data ?? ""));
+      emit(AuthSuccess(res.data));
     }
   }
 
@@ -39,7 +39,19 @@ class AuthBloc extends Cubit<AuthState> {
       emit(AuthError(res.error ?? ""));
     }
     else {
-      emit(AuthSuccess(res.data ?? ""));
+      emit(AuthSuccess(res.data));
+    }
+  }
+
+  logout() async {
+    emit(AuthLoading());
+    final res = await _authRepository.logout();
+
+    if(res.error != null) {
+      emit(AuthError(res.error ?? ""));
+    }
+    else {
+      emit(AuthLogoutSuccess());
     }
   }
 }
