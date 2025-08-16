@@ -57,7 +57,6 @@ class _AddTaskViewState extends State<AddTaskView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.task);
     return Scaffold(
       appBar: AppBar(title: Text(widget.task == null ? "Add Task" : "Edit Task")),
       body: BlocConsumer<TaskCubit, TaskState>(
@@ -85,6 +84,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                       ),
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
+                        FormBuilderValidators.minLength(3),
                       ]),
                     ),
                     const SizedBox(height: 16),
@@ -96,6 +96,9 @@ class _AddTaskViewState extends State<AddTaskView> {
                       decoration: InputDecoration(
                         hintText: 'Enter Description',
                       ),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.maxLength(200),
+                      ]),
                     ),
 
                     const SizedBox(height: 24),
