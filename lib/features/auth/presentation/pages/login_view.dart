@@ -94,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
 
                   const SizedBox(height: 24),
                   state is AuthLoading
-                      ? const CircularProgressIndicator()
+                      ? AppLoader()
                       : AppButton.primary(
                     onTap: () => _login(context),
                     label: "Login",

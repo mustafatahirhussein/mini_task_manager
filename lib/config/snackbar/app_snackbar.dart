@@ -14,4 +14,16 @@ class AppSnackBar {
       ),
     );
   }
+
+  static void showSuccessMessage(BuildContext context, {required String message}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.black,
+        content: AppText.subHeader(
+          text: message,
+          color: AppColors.white,
+        ),
+      ),
+    );
+  }
 }

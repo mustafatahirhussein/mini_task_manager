@@ -86,7 +86,7 @@ class _SignupViewState extends State<SignupView> {
                     ),
 
                     const SizedBox(height: 24),
-                    state is AuthLoading ? const CircularProgressIndicator() : AppButton.primary(
+                    state is AuthLoading ? AppLoader() : AppButton.primary(
                       onTap: () => _signup(context),
                       label: "Signup",
                     ),
